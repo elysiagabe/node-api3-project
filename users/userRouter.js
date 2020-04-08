@@ -4,6 +4,7 @@ const UserDB = require('./userDb');
 
 const router = express.Router();
 
+// ~~~ ENDPOINTS ~~~ //
 router.post('/', validateUser, (req, res) => {
   // do your magic!
 });
@@ -47,14 +48,20 @@ router.get('/:id/posts', validateUserId, (req, res) => {
 
 router.delete('/:id', validateUserId, (req, res) => {
   // do your magic!
+  UserDB.remove(req.params.id)
+  .then(count => {
+    res.status(200).json({ message: `${count} user(s) has/have been removed.`})
+  })
+  .catch(err => {
+    res.status(500).json({ errorMessage: "Specified user could not be deleted." })
+  })
 });
 
 router.put('/:id', validateUserId, (req, res) => {
   // do your magic!
 });
 
-//custom middleware
-
+// ~~~ CUSTOM MIDDLEWARE ~~~ //
 function validateUserId(req, res, next) {
   // do your magic!
   UserDB.getById(req.params.id)

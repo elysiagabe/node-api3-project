@@ -1,16 +1,32 @@
 const express = require('express');
 
 const UserDB = require('./userDb');
+const PostDB = require('../posts/postDb');
 
 const router = express.Router();
 
 // ~~~ ENDPOINTS ~~~ //
 router.post('/', validateUser, (req, res) => {
   // do your magic!
+  UserDB.insert(req.body)
+  .then(user => {
+    res.status(201).json(user)
+  })
+  .catch(err => {
+    res.status(500).json({ errorMessage: "User could not be created." })
+  })
 });
 
 router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
   // do your magic!
+  const newPost = {user_id: req.params.id, ...req.body}
+  PostDB.insert(newPost)
+  .then(post => {
+    res.status(201).json(post)
+  })
+  .catch(err => {
+    res.status(500).json({ errorMessage: "Post could not be created." })
+  })
 });
 
 router.get('/', (req, res) => {
@@ -39,7 +55,11 @@ router.get('/:id/posts', validateUserId, (req, res) => {
   // do your magic!
   UserDB.getUserPosts(req.params.id)
   .then(posts => {
-    res.status(200).json(posts)
+    if (posts.length > 0) {
+      res.status(200).json(posts)
+    } else {
+      res.status(200).json({ message: "User does not have any posts." })
+    }
   })
   .catch(err => {
     res.status(500).json({ errorMessage: "Specified user's posts could not be retrieved." })
@@ -80,7 +100,7 @@ function validateUserId(req, res, next) {
 
 function validateUser(req, res, next) {
   // do your magic!
-  if (!req.body) {
+  if (Object.keys(req.body).length == 0) {
     res.status(400).json({ errorMessage: "Missing user data" });
   } else if (!req.body.name) {
     res.status(400).json({ errorMessage: "Missing required name field" });
@@ -91,7 +111,7 @@ function validateUser(req, res, next) {
 
 function validatePost(req, res, next) {
   // do your magic!
-  if (!req.body) {
+  if (Object.keys(req.body).length == 0) {
     res.status(400).json({ errorMessage: "Missing post data" });
   } else if (!req.body.text) {
     res.status(400).json({ errorMessage: "Missing required text field." });

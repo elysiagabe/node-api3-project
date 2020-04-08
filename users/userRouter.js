@@ -15,16 +15,34 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
 router.get('/', (req, res) => {
   // do your magic!
   UserDB.get(req.query)
-  .then()
-  .catch()
+  .then(users => {
+    res.status(200).json(users)
+  })
+  .catch(err => {
+    res.status(500).json({ errorMessage: "Users' information could not be retrieved." })
+  })
 });
 
 router.get('/:id', validateUserId, (req, res) => {
   // do your magic!
+  UserDB.getById(req.params.id)
+  .then(user => {
+    res.status(200).json(user)
+  })
+  .catch(err => {
+    res.status(500).json({ errorMessage: "Specified user's information could not be retrieved." })
+  })
 });
 
 router.get('/:id/posts', validateUserId, (req, res) => {
   // do your magic!
+  UserDB.getUserPosts(req.params.id)
+  .then(posts => {
+    res.status(200).json(posts)
+  })
+  .catch(err => {
+    res.status(500).json({ errorMessage: "Specified user's posts could not be retrieved." })
+  })
 });
 
 router.delete('/:id', validateUserId, (req, res) => {
@@ -39,9 +57,8 @@ router.put('/:id', validateUserId, (req, res) => {
 
 function validateUserId(req, res, next) {
   // do your magic!
-  const id = req.params;
-  UserDB.getById(id)
-  .catch(user => {
+  UserDB.getById(req.params.id)
+  .then(user => {
     if (user) {
       req.user = user;
       next();
@@ -49,8 +66,8 @@ function validateUserId(req, res, next) {
       res.status(400).json({ errorMessage: "Invalid user id" });
     }
   })
-  .then(err => {
-    res.status(500).json({ errorMessage: "Oops! There was an issue with our server." });
+  .catch(err => {
+    res.status(500).json({ errorMessage: "Error", err });
   })
 };
 

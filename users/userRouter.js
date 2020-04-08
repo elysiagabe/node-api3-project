@@ -77,8 +77,16 @@ router.delete('/:id', validateUserId, (req, res) => {
   })
 });
 
-router.put('/:id', validateUserId, (req, res) => {
+router.put('/:id', validateUserId, validateUser, (req, res) => {
   // do your magic!
+  UserDB.update(req.params.id, req.body)
+  .then(count => {
+    const updatedUser = {id: req.params.id, ...req.body}
+    res.status(200).json(updatedUser)
+  })
+  .catch(err => {
+    res.status(500).json({ errorMessage: "User's information could not be updated." })
+  })
 });
 
 // ~~~ CUSTOM MIDDLEWARE ~~~ //

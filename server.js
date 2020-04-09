@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
 
 const server = express();
 
@@ -15,7 +16,8 @@ server.use(cors());
 server.use('/api/users', userRouter);
 
 server.get('/', (req, res) => {
-  res.send(`<h2>Let's write some middleware!</h2>`);
+  const message = process.env.MESSAGE;
+  res.send(`<h2>${message} Let's write some middleware! </h2>`);
 });
 
 // ~~~ CUSTOM MIDDLEWARE ~~~ //

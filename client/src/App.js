@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import logo from './logo.svg';
 import './App.css';
+import styled from 'styled-components';
 // components
 import Users from './components/Users';
 import UserProfile from './components/UserProfile';
@@ -12,7 +12,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <h1>This is the homepage</h1>
+      
       <Switch>
         <Route path="/users/:id" component={UserProfile} />
         <Route path="/" component={Users} />

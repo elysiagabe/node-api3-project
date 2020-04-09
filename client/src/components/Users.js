@@ -1,7 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import UserCard from './UserCard';
+import styled from 'styled-components';
+// import UserCard from './UserCard';
 import Axios from 'axios';
+
+const PageTitle = styled.h2`
+    color: #2CC1E9;
+    font-size: 24px;
+    font-weight: 500;
+    margin: 50px 0 32px;
+    letter-spacing: 1px;
+`
+
+const UserCard = styled.div`
+    color: #1E4088;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    margin: 20px 0 20px;
+    letter-spacing: 1.5px;
+`
 
 const Users = () => {
     const [users, setUsers] = useState([]);
@@ -17,10 +35,12 @@ const Users = () => {
 
     return (
         <div>
-            <h2>This is where all the users will be listed.</h2>
+            <PageTitle>All users using User App:</PageTitle>
             {users.map(user => (
-                <Link to={`/users/${user.id}`}>
-                <UserCard key={user.id} />
+                <Link to={`/users/${user.id}`} style={{textDecoration: "none"}}>
+                    <UserCard key={user.id}>
+                        {user.name}
+                    </UserCard>
                 </Link>
             ))}
         </div>
